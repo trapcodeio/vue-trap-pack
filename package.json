@@ -1,0 +1,15 @@
+{
+  "name": "vue-trap-pack",
+  "version": "0.0.1",
+  "description": "Vue Trap Pack",
+  "main": "index.js",
+  "repository": "https://github.com/trapcodeio/vue-trap-pack.git",
+  "author": "TrapCode",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "lodash": "^4.17.11",
+    "vue-ear": "^0.0.5"
+  }
+}
