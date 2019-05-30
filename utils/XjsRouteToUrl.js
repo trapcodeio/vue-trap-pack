@@ -1,8 +1,9 @@
 import ConfigManager from "../ConfigManager";
+
 export default ($key = '--routes') => {
     const jsRoutes = ConfigManager.loadAndDecodeData($key);
 
-    return (route, $keys = []) => {
+    return (route, $keys = [], $routes = undefined) => {
         if (Array.isArray(route)) {
             $keys = route[1];
             route = route[0];
@@ -12,8 +13,17 @@ export default ($key = '--routes') => {
             $keys = [$keys];
         }
 
-        if (typeof jsRoutes[route] !== "undefined") {
-            let routeUrl = jsRoutes[route];
+        if ($routes === undefined) {
+            $routes = jsRoutes;
+        }
+
+        if ($routes === undefined) {
+            console.error('No routes provided for XjsRouteHandler');
+            return route;
+        }
+
+        if (typeof $routes[route] !== "undefined") {
+            let routeUrl = $routes[route];
 
             if (routeUrl.substr(-1) === '*' && !$keys.length) {
                 return routeUrl.substr(0, routeUrl.length - 1)

@@ -6,6 +6,8 @@ class ConfigManager {
             config = ConfigManager.decode(jsConfig);
             return JSON.parse(config);
         }
+
+        return undefined;
     }
 
     static encode(str) {

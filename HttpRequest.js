@@ -1,8 +1,10 @@
 import axios from 'axios';
+
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 
-let func = function () {};
+let func = function () {
+};
 
 class HttpRequest {
     constructor(baseUrl = '') {
@@ -21,6 +23,10 @@ class HttpRequest {
     on(event, callback) {
         this.events[event] = callback;
         return this;
+    }
+
+    routeHandler(route) {
+        return route
     }
 
     route(route, $keys = []) {
@@ -63,8 +69,6 @@ class HttpRequest {
     sendVia(method, url, data = {}, jobs = {}) {
         url = this.baseUrl + url;
 
-        console.log(url);
-        console.log(data);
         let request = axios({
             method,
             url,
@@ -132,6 +136,5 @@ class HttpRequest {
 
 HttpRequest.prototype.baseUrl = '';
 HttpRequest.prototype.events = {say: func};
-HttpRequest.prototype.routeHandler = (route) => route;
 
 export default HttpRequest;
