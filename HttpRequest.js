@@ -86,7 +86,7 @@ class HttpRequest {
                     }
 
                     if (jobs.hasOwnProperty('error')) {
-                        jobs.noOrError(api, response);
+                        jobs.error(api, response);
                     }
                 } else {
                     if (api.hasOwnProperty('proceed') && api['proceed'] === true) {
