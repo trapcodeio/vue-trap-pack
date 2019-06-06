@@ -67,6 +67,10 @@ class HttpRequest {
     }
 
     sendVia(method, url, data = {}, jobs = {}) {
+        if((url.length && url !== '/') && this.baseUrl.substr(-1)!=='/'){
+            this.baseUrl = this.baseUrl + '/'
+        }
+
         url = this.baseUrl + url;
 
         let request = axios({
