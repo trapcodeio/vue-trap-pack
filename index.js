@@ -41,11 +41,10 @@ const VueTrapPack = {
 
         }
 
-        let data = function () {
-        };
+        let data = () => () => {};
 
         if (options.hasOwnProperty('autoload') && Object.keys(options.autoload).length) {
-            data = function () {
+            data = () => {
                 return options.autoload
             }
         }
