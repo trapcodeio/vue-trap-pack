@@ -1,7 +1,11 @@
 import ConfigManager from "../ConfigManager";
 
 export default ($key = '--routes') => {
-    const jsRoutes = ConfigManager.loadAndDecodeData($key);
+    let jsRoutes = $key;
+
+    if (typeof $key === "string") {
+        jsRoutes = ConfigManager.loadAndDecodeData($key);
+    }
 
     return (route, $keys = [], $routes = undefined) => {
         if (Array.isArray(route)) {
@@ -29,13 +33,13 @@ export default ($key = '--routes') => {
                 return routeUrl.substr(0, routeUrl.length - 1)
             }
 
-            let hasParamsRule = new RegExp("[*]|(_[?][?]_)", 'g');
-            let hasParam = routeUrl.match(hasParamsRule);
+            const hasParamsRule = new RegExp("[*]|(_[?][?]_)", 'g');
+            const hasParam = routeUrl.match(hasParamsRule);
 
             if (Array.isArray(hasParam) && hasParam.length) {
                 let counter = 0;
-                let replacer = () => {
-                    let key = $keys[counter] || '?';
+                const replacer = () => {
+                    const key = $keys[counter] || '?';
                     counter++;
                     return key;
                 };

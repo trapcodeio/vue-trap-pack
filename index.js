@@ -18,7 +18,7 @@ const VueTrapPack = {
             api = options.api;
         }
 
-        if (options.hasOwnProperty('framework')) {
+        if (!options.hasOwnProperty('customRouteHandler') && options.hasOwnProperty('framework')) {
             if (options.framework === 'xjs') {
                 api.routeHandler = XjsRouteHandler();
             } else if (options.framework === 'laravel') {
@@ -41,7 +41,9 @@ const VueTrapPack = {
 
         }
 
-        let data = () => { return {}};
+        let data = () => {
+            return {}
+        };
 
         if (options.hasOwnProperty('autoload') && Object.keys(options.autoload).length) {
             data = () => {

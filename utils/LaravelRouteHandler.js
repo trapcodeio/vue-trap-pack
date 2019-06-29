@@ -10,8 +10,12 @@ function removeLastChar(str, char, depth = 1) {
 
 
 export default function ($key = '--routes', $baseUrl = '') {
-    let $routes = ConfigManager.loadAndDecodeData($key);
 
+    let $routes = $key;
+
+    if (typeof $key === "string") {
+        $routes = ConfigManager.loadAndDecodeData($key);
+    }
 
     return function (name, data = [], $customRoutes = undefined) {
 
@@ -24,7 +28,7 @@ export default function ($key = '--routes', $baseUrl = '') {
             return name;
         }
 
-        let index, item, key, l, len, link, linkQuery, linkSplit;
+        let key;
 
         if (Array.isArray(name)) {
             key = name[0];
@@ -35,18 +39,18 @@ export default function ($key = '--routes', $baseUrl = '') {
             key = name;
         }
 
-        link = key;
-
+        let link = key;
         if ($routes.hasOwnProperty(key)) {
             link = $routes[key];
             link = link.replace(/[{]+\w+[}]/g, '{?}');
             link = link.replace(/[{]+\w+[?][}]/g, '{?}');
 
             if (link.indexOf('{?}') > -1 && link.split('{?}').length > 1 && data.length > 0) {
-                index = 0;
-                linkSplit = link.split('{?}');
-                for (l = 0, len = linkSplit.length; l < len; l++) {
-                    item = linkSplit[l];
+                let index = 0;
+                const linkSplit = link.split('{?}');
+
+                for (let l = 0, len = linkSplit.length; l < len; l++) {
+                    const item = linkSplit[l];
                     if (linkSplit.hasOwnProperty(index) && data.hasOwnProperty(index)) {
                         linkSplit[index] = item + data[index];
                     }
@@ -56,11 +60,11 @@ export default function ($key = '--routes', $baseUrl = '') {
             }
 
             if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length > 0) {
-                linkQuery = '?';
+                let linkQuery = '?';
                 _.each(data, function (val, key) {
                     return linkQuery += key + '=' + val + '&';
                 });
-                linkQuery = ng.removeLastChar(linkQuery, '&');
+                linkQuery = removeLastChar(linkQuery, '&');
                 link += linkQuery;
             }
         }
