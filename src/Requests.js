@@ -1,11 +1,5 @@
 import StorageHelper from '../StorageHelper'
-import HttpHelper from '../HttpRequest';
 import Lodash from '../lodash';
-import XjsRouteHandler from '../utils/XjsRouteToUrl';
-
-const api = new HttpHelper();
-api.routeHandler = XjsRouteHandler();
-
 
 class HttpRequestMixin {
     getFrom() {
@@ -83,7 +77,11 @@ class HttpRequestMixin {
                 },
 
                 fetchData(clear = false, getFrom = null) {
-                    let r, requests;
+                    /**
+                     * @type {*}
+                     */
+                    let r;
+
                     let component = this;
 
                     if (clear) {
@@ -101,13 +99,12 @@ class HttpRequestMixin {
                     }
 
                     if (Array.isArray(r) && r.length) {
-                        requests = r;
-                        requests.forEach(function (request) {
+                        r.forEach(function (request) {
                             const job = {
                                 yes: function (data) {
                                     component.vtpRequest.completed++;
                                     if (typeof component['mountFromServer'] === 'function') {
-                                        component.mountFromServer(data, request);
+                                        component['mountFromServer'](data, request);
                                     }
                                 }
                             };
@@ -118,7 +115,7 @@ class HttpRequestMixin {
                                 request.data = {};
                             }
 
-                            vm.doServerGet(request, job);
+                            vm.doServerGet(request, job, component);
                         });
                     } else {
                         let jobs = {
@@ -135,7 +132,7 @@ class HttpRequestMixin {
                             if (!r.hasOwnProperty('data')) {
                                 r.data = {};
                             }
-                            vm.doServerGet(r, jobs);
+                            vm.doServerGet(r, jobs, component);
                         }
                     }
                 }
@@ -143,7 +140,7 @@ class HttpRequestMixin {
         };
     }
 
-    doServerGet(request, jobs) {
+    doServerGet(request, jobs, component) {
         let cacheKey, data, newJob, thisCacheGetter, thisCacheKey;
         cacheKey = 'componentCache:';
         if (request.hasOwnProperty('cache')) {
@@ -169,10 +166,10 @@ class HttpRequestMixin {
                         return jobs.yes(data);
                     }
                 };
-                return api.getFromRoute(request.route, request.data, newJob);
+                return component.$api.getFromRoute(request.route, request.data, newJob);
             }
         } else {
-            return api.getFromRoute(request.route, request.data, jobs);
+            return component.$api.getFromRoute(request.route, request.data, jobs);
         }
     }
 
