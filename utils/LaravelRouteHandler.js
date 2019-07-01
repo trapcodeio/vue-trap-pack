@@ -1,4 +1,6 @@
 import ConfigManager from "../ConfigManager";
+import _ from "../lodash";
+
 
 function removeLastChar(str, char, depth = 1) {
     str = str.trim();
