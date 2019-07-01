@@ -67,8 +67,12 @@ class HttpRequest {
     }
 
     sendVia(method, url, data = {}, jobs = {}) {
-        if((url.length && url !== '/') && this.baseUrl.substr(-1)!=='/'){
-            this.baseUrl = this.baseUrl + '/'
+        if(url.substr(0, 1) === '/'){
+            url = url.substr(1)
+        }
+
+        if(this.baseUrl.substr(-1) !== '/'){
+            this.baseUrl += '/'
         }
 
         url = this.baseUrl + url;

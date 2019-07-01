@@ -18,11 +18,12 @@ const VueTrapPack = {
             api = options.api;
         }
 
-        if (!options.hasOwnProperty('customRouteHandler') && options.hasOwnProperty('framework')) {
-            if (options.framework === 'xjs') {
-                api.routeHandler = XjsRouteHandler();
-            } else if (options.framework === 'laravel') {
-                api.routeHandler = LaravelRouteHandler();
+        if (options.hasOwnProperty('framework')) {
+            const framework = options.framework;
+            if (framework.name === 'xjs') {
+                api.routeHandler = XjsRouteHandler(framework['routes']);
+            } else if (framework.name === 'laravel') {
+                api.routeHandler = LaravelRouteHandler(framework['routes']);
             }
         }
 
