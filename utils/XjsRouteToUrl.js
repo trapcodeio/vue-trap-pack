@@ -15,7 +15,7 @@ export default ($key = '--routes') => {
     }
 
     return (route, $keys = [], $query = {}, $routes = undefined) => {
-        console.log($query);
+
         if (Array.isArray(route)) {
             $keys = route[1];
             route = route[0];
