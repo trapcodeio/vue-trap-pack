@@ -2,9 +2,13 @@ import ConfigManager from "../ConfigManager";
 import BuildUrl from "build-url";
 
 const addQueryToUrl = (url, query = {}) => {
-    return BuildUrl(url, {
-        queryParams: query
-    })
+    if (typeof query === "object" && Object.keys(query).length) {
+        return BuildUrl(url, {
+            queryParams: query
+        })
+    } else {
+        return url;
+    }
 };
 
 export default ($key = '--routes') => {
