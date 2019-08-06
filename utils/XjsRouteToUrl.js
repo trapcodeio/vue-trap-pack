@@ -1,4 +1,11 @@
 import ConfigManager from "../ConfigManager";
+import BuildUrl from "build-url";
+
+const addQueryToUrl = (url, query = {}) => {
+    return BuildUrl(url, {
+        queryParams: query
+    })
+};
 
 export default ($key = '--routes') => {
     let jsRoutes = $key;
@@ -7,7 +14,8 @@ export default ($key = '--routes') => {
         jsRoutes = ConfigManager.loadAndDecodeData($key);
     }
 
-    return (route, $keys = [], $routes = undefined) => {
+    return (route, $keys = [], $query = {}, $routes = undefined) => {
+        console.log($query);
         if (Array.isArray(route)) {
             $keys = route[1];
             route = route[0];
@@ -45,10 +53,10 @@ export default ($key = '--routes') => {
                 };
 
                 routeUrl = routeUrl.replace(hasParamsRule, replacer);
-                return routeUrl;
+                return addQueryToUrl(routeUrl, $query);
             }
 
-            return routeUrl;
+            return addQueryToUrl(routeUrl, $query);
         }
 
         return route;

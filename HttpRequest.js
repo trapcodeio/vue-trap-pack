@@ -29,8 +29,8 @@ class HttpRequest {
         return route
     }
 
-    route(route, $keys = []) {
-        return this.routeHandler(route, $keys);
+    route(...args) {
+        return this.routeHandler(...args);
     }
 
     // -------------  START HTTP SECTION -----------------
@@ -67,11 +67,11 @@ class HttpRequest {
     }
 
     sendVia(method, url, data = {}, jobs = {}) {
-        if(url.substr(0, 1) === '/'){
+        if (url.substr(0, 1) === '/') {
             url = url.substr(1)
         }
 
-        if(this.baseUrl.substr(-1) !== '/'){
+        if (this.baseUrl.substr(-1) !== '/') {
             this.baseUrl += '/'
         }
 
