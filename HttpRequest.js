@@ -78,7 +78,7 @@ class HttpRequest {
 
         url = this.baseUrl + url;
 
-        if (method.toLowerCase() === 'get') {
+        if (method.toLowerCase() === 'get' && Object.keys(data).length) {
             url = buildUrl(url, {
                 queryParams: data
             });
