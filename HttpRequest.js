@@ -1,4 +1,5 @@
 import axios from 'axios';
+import buildUrl from 'build-url';
 
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
@@ -76,6 +77,12 @@ class HttpRequest {
         }
 
         url = this.baseUrl + url;
+
+        if (method.toLowerCase() === 'get') {
+            url = buildUrl(url, {
+                queryParams: data
+            });
+        }
 
         let request = axios({
             method,
