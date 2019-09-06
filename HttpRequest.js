@@ -80,7 +80,7 @@ class HttpRequest {
 
         if (method.toLowerCase() === 'get' && Object.keys(data).length) {
             url = buildUrl(url, {
-                queryParams: data
+                queryParaAms: data
             });
         }
 
