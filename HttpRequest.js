@@ -4,7 +4,7 @@ import buildUrl from 'build-url';
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 
-let func = function () {
+const func = function () {
 };
 
 class HttpRequest {
@@ -84,17 +84,17 @@ class HttpRequest {
             });
         }
 
-        let request = axios({
+        const request = axios({
             method,
             url,
             data,
         });
 
-        let vm = this;
+        const vm = this;
 
         const processRequest = function (response, error = false) {
             if (typeof response === 'object' && typeof response.data === "object") {
-                let api = response.data;
+                const api = response.data;
                 if (error) {
                     if (jobs.hasOwnProperty('noOrError')) {
                         jobs.noOrError(api, response);
@@ -110,7 +110,7 @@ class HttpRequest {
                         }
                     } else {
                         if (jobs.hasOwnProperty('no')) {
-                            jobs.no(api, response);
+                            jobs.no(api['data'], response);
                         }
                         if (jobs.hasOwnProperty('noOrError')) {
                             jobs.noOrError(api, response);
@@ -118,7 +118,7 @@ class HttpRequest {
                     }
 
                     if (jobs.hasOwnProperty('yesOrNo')) {
-                        jobs.yesOrNo(api, response);
+                        jobs.yesOrNo(api['data'], response);
                     }
                 }
 
@@ -143,8 +143,8 @@ class HttpRequest {
             }
         };
 
-        request.then(processRequest).catch(function (error) {
-            processRequest(error.response, true);
+        return request.then(processRequest).catch(function (error) {
+            return processRequest(error.response, true);
         });
     }
 }
