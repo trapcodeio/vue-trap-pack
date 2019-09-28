@@ -1,6 +1,3 @@
-vueEar = window.vueEar;
-
-
 class ComponentEventsEngine {
     constructor(events) {
         this.events = events;
