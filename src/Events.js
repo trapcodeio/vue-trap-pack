@@ -14,7 +14,7 @@ class ComponentEventsEngine {
                 });
             },
             beforeDestroy() {
-                Object.keys(vm.events).forEach(function (event) {
+                Object.keys(vm.events).forEach((event) => {
                     return this.$ear.stopListeningFor(event);
                 });
             }
