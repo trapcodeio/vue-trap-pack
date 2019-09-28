@@ -1,38 +1,31 @@
-let ComponentEventsEngine, vueEar;
-
 vueEar = window.vueEar;
 
-export default ComponentEventsEngine = (function () {
-    class ComponentEventsEngine {
-        constructor(events) {
-            this.events = events;
-            return this.getEventsMixin();
-        }
 
-        getEventsMixin() {
-            var vm;
-            vm = this;
-            return {
-                created: function () {
-                    var component;
-                    component = this;
-                    return Object.keys(vm.events).forEach(function (event) {
-                        return vueEar.listenTo(event, function (data = {}) {
-                            return vm.events[event](component, data);
-                        });
+class ComponentEventsEngine {
+    constructor(events) {
+        this.events = events;
+    }
+
+    getMixin() {
+        const vm = this;
+        return {
+            created() {
+                Object.keys(vm.events).forEach((event) => {
+                    return this.$ear.listenFor(event, (data = {}) => {
+                        return vm.events[event](this, data);
                     });
-                },
-                beforeDestroy: function () {
-                    return Object.keys(vm.events).forEach(function (event) {
-                        return vueEar.stopListeningTo(event);
-                    });
-                }
-            };
-        }
+                });
+            },
+            beforeDestroy() {
+                Object.keys(vm.events).forEach(function (event) {
+                    return this.$ear.stopListeningFor(event);
+                });
+            }
+        };
+    }
 
-    };
+}
 
-    ComponentEventsEngine.prototype.events = {};
-    return ComponentEventsEngine;
+ComponentEventsEngine.prototype.events = {};
+export default ComponentEventsEngine;
 
-}).call(this);

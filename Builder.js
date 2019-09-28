@@ -1,4 +1,5 @@
 import RequestHandler from './src/Requests';
+import EventsHandler from './src/Events';
 
 /**
  * Use VTP Builder
@@ -12,7 +13,7 @@ const vtpBuilder = function ($component, $options = {}) {
     /*
     * Use $component['vtp'] as $options if exists
     *
-    * Enables shorthand {vtp: {}, ....componentData}
+    * Enables shorthand {vtp: {}, ...componentData}
     * */
     if ($component.hasOwnProperty('vtp')) {
         $options = $component['vtp'];
@@ -32,6 +33,15 @@ const vtpBuilder = function ($component, $options = {}) {
      */
     if (typeof $options['fetch'] !== "undefined") {
         $component.mixins.push(new RequestHandler($options.fetch))
+    }
+
+    /*
+    * If $options has `events` key, it's data will be sent
+    * To the EventsHandler.
+     */
+    if (typeof $options['events'] !== "undefined") {
+        const EventHandler = new EventsHandler($options.events);
+        $component.mixins.push(EventHandler.getMixin())
     }
 
     return $component;
