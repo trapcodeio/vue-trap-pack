@@ -1,8 +1,6 @@
 import axios from 'axios';
 import buildUrl from 'build-url';
 
-axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
-
 
 const func = function () {
 };
@@ -19,6 +17,29 @@ class HttpRequest {
         } else {
             this.baseUrl = window.location.protocol + '//' + window.location.host
         }
+
+        this.axios = new axios.create({
+            baseURL: this.baseUrl,
+        })
+    }
+
+    hasNprogress(progress){
+        if(progress.start && progress.done){
+            this.axios.interceptors.request.use(config => {
+                progress.start();
+                return config
+            });
+
+            this.axios.interceptors.response.use(response => {
+                progress.done();
+                return response
+            });
+        }
+
+    }
+
+    isXmlRequest() {
+        this.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
     }
 
     on(event, callback) {
@@ -84,7 +105,7 @@ class HttpRequest {
             });
         }
 
-        const request = axios({
+        const request = this.axios({
             method,
             url,
             data,
@@ -150,6 +171,7 @@ class HttpRequest {
 }
 
 HttpRequest.prototype.baseUrl = '';
+HttpRequest.prototype.axios = null;
 HttpRequest.prototype.events = {say: func};
 
 export default HttpRequest;
