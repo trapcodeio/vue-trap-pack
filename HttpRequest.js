@@ -23,8 +23,8 @@ class HttpRequest {
         })
     }
 
-    hasNprogress(progress){
-        if(progress.start && progress.done){
+    hasNprogress(progress) {
+        if (progress.start && progress.done) {
             this.axios.interceptors.request.use(config => {
                 progress.start();
                 return config
@@ -56,39 +56,39 @@ class HttpRequest {
     }
 
     // -------------  START HTTP SECTION -----------------
-    getFrom(url, data = {}, jobs = {}) {
-        return this.sendVia('GET', url, data, jobs);
+    getFrom(url, data = {}, jobs = {}, config = {}) {
+        return this.sendVia('GET', url, data, jobs, config);
     }
 
-    postTo(url, data = {}, jobs = {}) {
-        return this.sendVia('POST', url, data, jobs);
+    postTo(url, data = {}, jobs = {}, config = {}) {
+        return this.sendVia('POST', url, data, jobs, config);
     }
 
-    deleteFrom(url, data = {}, jobs = {}) {
-        return this.sendVia('DELETE', url, data, jobs);
+    deleteFrom(url, data = {}, jobs = {}, config = {}) {
+        return this.sendVia('DELETE', url, data, jobs, config);
     }
 
-    putIn(url, data = {}, jobs = {}) {
-        return this.sendVia('PUT', url, data, jobs);
+    putIn(url, data = {}, jobs = {}, config = {}) {
+        return this.sendVia('PUT', url, data, jobs, config);
     }
 
-    getFromRoute(route, data = {}, jobs = {}) {
-        return this.getFrom(this.route(route), data, jobs);
+    getFromRoute(route, data = {}, jobs = {}, config = {}) {
+        return this.getFrom(this.route(route), data, jobs, config);
     }
 
-    postToRoute(route, data = {}, jobs = {}) {
-        return this.postTo(this.route(route), data, jobs);
+    postToRoute(route, data = {}, jobs = {}, config = {}) {
+        return this.postTo(this.route(route), data, jobs, config);
     }
 
-    deleteFromRoute(route, data = {}, jobs = {}) {
-        return this.deleteFrom(this.route(route), data, jobs);
+    deleteFromRoute(route, data = {}, jobs = {}, config = {}) {
+        return this.deleteFrom(this.route(route), data, jobs, config);
     }
 
-    putInRoute(route, data = {}, jobs = {}) {
-        return this.putIn(this.route(route), data, jobs);
+    putInRoute(route, data = {}, jobs = {}, config = {}) {
+        return this.putIn(this.route(route), data, jobs, config);
     }
 
-    sendVia(method, url, data = {}, jobs = {}) {
+    sendVia(method, url, data = {}, jobs = {}, config = {}) {
         if (url.substr(0, 1) === '/') {
             url = url.substr(1)
         }
@@ -106,9 +106,12 @@ class HttpRequest {
         }
 
         const request = this.axios({
-            method,
-            url,
-            data,
+            ...{
+                method,
+                url,
+                data,
+            },
+            ...config
         });
 
         const vm = this;
