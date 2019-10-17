@@ -25,9 +25,7 @@ export default ($key = '--routes') => {
             route = route[0];
         }
 
-        if (typeof $keys === 'string') {
-            $keys = [$keys];
-        }
+        if (!Array.isArray($keys)) $keys = [$keys];
 
         if ($routes === undefined) {
             $routes = jsRoutes;
