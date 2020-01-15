@@ -5,6 +5,58 @@ import buildUrl from 'build-url';
 const func = function () {
 };
 
+const processRequest = function (response, error = false, jobs, vm = {}) {
+    const jobsHasAnyFn = jobs.hasOwnProperty('any');
+    const jobsHasErrorFn = jobs.hasOwnProperty('error');
+    const jobsHasNoOrErrorFn = jobs.hasOwnProperty('noOrError');
+
+    if (typeof response === 'object' && typeof response.data === "object") {
+        const api = response.data;
+        if (error) {
+            if (jobsHasNoOrErrorFn) jobs.noOrError(api, response);
+
+            if (jobsHasErrorFn) jobs.error(api, response);
+        } else {
+            if (api.hasOwnProperty('proceed') && api['proceed'] === true) {
+                if (jobs.hasOwnProperty('yes')) {
+                    jobs.yes(api['data'], response);
+                }
+            } else {
+                if (jobs.hasOwnProperty('no')) {
+                    jobs.no(api['data'], response);
+                }
+                if (jobsHasNoOrErrorFn) {
+                    jobs.noOrError(api, response);
+                }
+            }
+
+            if (jobs.hasOwnProperty('yesOrNo')) {
+                jobs.yesOrNo(api['data'], response);
+            }
+        }
+
+        if (jobsHasAnyFn) {
+            jobs.any(api, response);
+        }
+
+        if (typeof api.__say !== 'undefined' && typeof vm.events.say === 'function') {
+            vm.events['say'](api.__say, api['proceed']);
+        }
+    } else {
+        if (error) {
+            if (jobsHasNoOrErrorFn) jobs.noOrError(response);
+
+            if (jobsHasErrorFn) jobs.error(response);
+        } else {
+            jobs.yes(response);
+        }
+
+        if (jobsHasAnyFn) {
+            jobs.any(response);
+        }
+    }
+};
+
 class HttpRequest {
     constructor(baseUrl = '') {
         if (baseUrl === false) {
@@ -114,62 +166,9 @@ class HttpRequest {
             ...config
         });
 
-        const vm = this;
-
-        const processRequest = function (response, error = false) {
-            if (typeof response === 'object' && typeof response.data === "object") {
-                const api = response.data;
-                if (error) {
-                    if (jobs.hasOwnProperty('noOrError')) {
-                        jobs.noOrError(api, response);
-                    }
-
-                    if (jobs.hasOwnProperty('error')) {
-                        jobs.error(api, response);
-                    }
-                } else {
-                    if (api.hasOwnProperty('proceed') && api['proceed'] === true) {
-                        if (jobs.hasOwnProperty('yes')) {
-                            jobs.yes(api['data'], response);
-                        }
-                    } else {
-                        if (jobs.hasOwnProperty('no')) {
-                            jobs.no(api['data'], response);
-                        }
-                        if (jobs.hasOwnProperty('noOrError')) {
-                            jobs.noOrError(api, response);
-                        }
-                    }
-
-                    if (jobs.hasOwnProperty('yesOrNo')) {
-                        jobs.yesOrNo(api['data'], response);
-                    }
-                }
-
-                if (jobs.hasOwnProperty('any')) {
-                    jobs.any(api, response);
-                }
-
-                if (typeof api.__say !== 'undefined' && typeof vm.events.say === 'function') {
-                    vm.events['say'](api.__say, api['proceed']);
-                }
-            } else {
-                if (error) {
-                    if (jobs.hasOwnProperty('noOrError'))
-                        jobs.noOrError(response);
-                } else {
-                    jobs.yes(response);
-                }
-
-                if (jobs.hasOwnProperty('any')) {
-                    jobs.any(response);
-                }
-            }
-        };
-
-        return request.then(processRequest).catch(function (error) {
-            return processRequest(error.response, true);
-        });
+        return request
+            .then((response) => processRequest(response, false, jobs, this))
+            .catch((error) => processRequest(error.response, true, jobs, this));
     }
 }
 
