@@ -14,9 +14,8 @@ let StorageHelper = {
     },
 
     storeData(name, value) {
-        if (typeof value === 'object') value = JSON.stringify(value);
-
         if (localStorage) {
+            if (typeof value === 'object') value = JSON.stringify(value);
             localStorage.setItem(this.getStorageKey(name), value);
         }
     },
@@ -69,6 +68,9 @@ let StorageHelper = {
         if (!sessionStorage) {
             return;
         }
+
+        if (typeof value === 'object') value = JSON.stringify(value);
+
 
         sessionStorage.setItem(this.getTempStorageKey(name), value);
     },
