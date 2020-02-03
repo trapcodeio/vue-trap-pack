@@ -14,7 +14,7 @@ class HttpRequestMixin {
         if (typeof getFrom === 'function') {
             this.getFrom = getFrom;
         } else {
-            this.getFrom = function () {
+            this.getFrom = () => {
                 return getFrom;
             };
         }
@@ -25,7 +25,7 @@ class HttpRequestMixin {
         let vm = this;
 
         return {
-            data: function () {
+            data() {
                 return {
                     vtpRequest: {
                         data: null,
@@ -36,7 +36,7 @@ class HttpRequestMixin {
                     },
                 };
             },
-            mounted: function () {
+            mounted() {
                 let getFrom = vm.getFrom(this);
                 let length = -1;
 
@@ -99,27 +99,30 @@ class HttpRequestMixin {
                     }
 
                     if (Array.isArray(r) && r.length) {
-                        r.forEach(function (request) {
-                            const job = {
-                                yes: function (data) {
+                        r.forEach((request) => {
+                            const ownJob = {
+                                yes: (data) => {
                                     component.vtpRequest.completed++;
                                     if (typeof component['mountFromServer'] === 'function') {
                                         component['mountFromServer'](data, request);
                                     }
                                 }
                             };
-                            if (!request.hasOwnProperty('jobs')) {
+
+                            if (request.hasOwnProperty('jobs')) {
+                                request.jobs = Lodash.extend(ownJob, request.jobs)
+                            } else {
                                 request.jobs = {};
                             }
                             if (!request.hasOwnProperty('data')) {
                                 request.data = {};
                             }
 
-                            vm.doServerGet(request, job, component);
+                            vm.doServerGet(request, request.jobs, component);
                         });
                     } else {
                         let jobs = {
-                            yes: function (data) {
+                            yes: (data) => {
                                 component.vtpRequest.completed++;
                                 if (typeof component['mountFromServer'] === 'function') {
                                     component.mountFromServer(data, r);
@@ -157,7 +160,7 @@ class HttpRequestMixin {
                 return jobs.yes(data);
             } else {
                 newJob = {
-                    yes: function (data) {
+                    yes: (data) => {
                         if (thisCacheGetter !== null) {
                             data = thisCacheGetter(data);
                         }

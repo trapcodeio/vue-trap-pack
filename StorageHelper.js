@@ -8,7 +8,7 @@ let StorageHelper = {
     getStorageKey(name) {
         return 'app-store:' + name;
     },
-
+ 
     hasStoredData(key) {
         return localStorage.getItem(this.getStorageKey(key)) !== null;
     },
@@ -76,12 +76,12 @@ let StorageHelper = {
     },
 
 
-    getTempStoredData(key, $default = null) {
+    getTempStoredData(key, $default = undefined) {
         if (!sessionStorage) {
             return;
         }
 
-        if (!this.hasStoredData(key)) {
+        if (!this.hasTempStoredData(key)) {
             return $default;
         }
 
