@@ -109,11 +109,14 @@ class HttpRequestMixin {
                                 }
                             };
 
-                            if (request.hasOwnProperty('jobs')) {
-                                request.jobs = Lodash.extend(ownJob, request.jobs)
-                            } else {
+                            // Set jobs to empty object if not defined.
+                            if (!request.hasOwnProperty('jobs')) {
                                 request.jobs = {};
                             }
+
+                            // Merge defined jobs with internal jobs
+                            request.jobs = Lodash.extend(ownJob, request.jobs);
+
                             if (!request.hasOwnProperty('data')) {
                                 request.data = {};
                             }
