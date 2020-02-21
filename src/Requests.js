@@ -37,19 +37,6 @@ class HttpRequestMixin {
                 };
             },
             mounted() {
-                let getFrom = vm.getFrom(this);
-                let length = -1;
-
-                if (getFrom !== null) {
-                    if (Array.isArray(getFrom)) {
-                        length = getFrom.length
-                    } else if (typeof getFrom == 'object') {
-                        length = 1
-                    }
-                }
-
-                this.vtpRequest.count = length;
-
                 return this.fetchData();
             },
 
@@ -81,14 +68,13 @@ class HttpRequestMixin {
                      * @type {*}
                      */
                     let r;
-
                     let component = this;
 
                     if (clear) {
                         this.clearFetchedData();
                     }
 
-                    if (getFrom === null) {
+                    if (!getFrom) {
                         r = vm.getFrom(component);
                     } else {
                         if (typeof getFrom === 'function') {
@@ -97,6 +83,18 @@ class HttpRequestMixin {
                             r = getFrom;
                         }
                     }
+
+                    /** Get number of request */
+                    let length = -1;
+                    if (r) {
+                        if (Array.isArray(r)) {
+                            length = r.length
+                        } else if (typeof getFrom == 'object') {
+                            length = 1
+                        }
+                    }
+
+                    component.vtpRequest.count = length;
 
                     if (Array.isArray(r) && r.length) {
                         r.forEach((request) => {
@@ -168,7 +166,6 @@ class HttpRequestMixin {
                             data = thisCacheGetter(data);
                         }
                         StorageHelper.setData(cacheKey, data);
-                        // vueEar.talkTo(cacheKey, data);
                         return jobs.yes(data);
                     }
                 };
